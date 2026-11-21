@@ -22,13 +22,15 @@ export function Sidebar() {
       const sections = LINKS.map(({ id }) => document.getElementById(id)).filter(
         (el): el is HTMLElement => el !== null,
       );
-      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const atBottom = maxScroll > 2 && window.scrollY >= maxScroll - 2;
       const threshold = Math.min(160, window.innerHeight * 0.25);
       let current = sections[0]?.id ?? "home";
       for (const section of sections) {
         if (section.getBoundingClientRect().top <= threshold) current = section.id;
       }
       if (atBottom && sections.length) current = pinned.current ?? sections[sections.length - 1].id;
+      else if (maxScroll <= 2 && pinned.current) current = pinned.current;
       setActive(current);
     };
     const onScroll = () => {
