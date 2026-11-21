@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Logo } from "@/components/Logo";
 import { Sidebar } from "@/components/Sidebar";
 
@@ -8,9 +9,9 @@ const CAPABILITIES = [
   { label: "Thinks ahead", body: "Notices what needs doing before you have to ask.", highlight: true },
 ];
 
-const TEAM = [
+const TEAM: { name: string; initials: string; role: string; photo?: string }[] = [
   { name: "Divi Jaiwanth", initials: "DJ", role: "Co-founder" },
-  { name: "Smart Bob", initials: "SB", role: "Co-founder" },
+  { name: "Smart Bob", initials: "SB", role: "Co-founder", photo: "/team/smart-bob.jpg" },
   { name: "U San Oo", initials: "SO", role: "Co-founder" },
 ];
 
@@ -127,9 +128,19 @@ export default function Home() {
           <ul className="team">
             {TEAM.map((m, i) => (
               <li key={m.name} className="member">
-                <div className="member__portrait">
+                <div className={`member__portrait${m.photo ? " member__portrait--photo" : ""}`}>
+                  {m.photo ? (
+                    <Image
+                      className="member__photo"
+                      src={m.photo}
+                      alt={`Portrait of ${m.name}`}
+                      fill
+                      sizes="(max-width: 720px) 100vw, 33vw"
+                    />
+                  ) : (
+                    <span className="member__initials">{m.initials}</span>
+                  )}
                   <span className="member__index mono">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="member__initials">{m.initials}</span>
                 </div>
                 <div className="member__meta">
                   <h3>{m.name}</h3>
