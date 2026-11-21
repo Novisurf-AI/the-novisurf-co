@@ -267,7 +267,6 @@ ul {
 
 .main {
   position: relative;
-  z-index: 1;
   min-width: 0;
 }
 
@@ -626,6 +625,10 @@ ul {
 
 @media (min-width: 960px) {
   .footer {
+    position: relative;
+    z-index: 3;
+    background: var(--bg);
+    box-shadow: -16px 0 0 var(--bg);
     margin-left: calc(var(--sidebar) * -1);
     grid-template-columns: calc(var(--sidebar) + var(--gutter)) minmax(0, 1fr);
   }
