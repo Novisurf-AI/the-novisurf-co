@@ -15,20 +15,32 @@ export function Sidebar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const sections = LINKS.map(({ id }) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => el !== null,
-    );
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-30% 0px -60% 0px" },
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const sections = LINKS.map(({ id }) => document.getElementById(id)).filter(
+        (el): el is HTMLElement => el !== null,
+      );
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      const threshold = Math.min(160, window.innerHeight * 0.25);
+      let current = sections[0]?.id ?? "home";
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= threshold) current = section.id;
+      }
+      if (atBottom && sections.length) current = sections[sections.length - 1].id;
+      setActive(current);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
