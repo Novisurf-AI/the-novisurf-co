@@ -1,0 +1,20 @@
+type LogoProps = { size?: number; className?: string };
+
+export function Logo({ size = 20, className }: LogoProps) {
+  return (
+    <svg
+      className={className}
+      width={(size * 88) / 96}
+      height={size}
+      viewBox="0 0 88 96"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M20.5 0C31.8218 0 41 9.17816 41 20.5V75.5C41 86.8218 31.8218 96 20.5 96C9.17816 96 0 86.8218 0 75.5V20.5C1.03081e-06 9.17816 9.17816 0 20.5 0ZM67.5 32C78.8218 32 88 41.1782 88 52.5V75.5C88 86.8218 78.8218 96 67.5 96C56.1782 96 47 86.8218 47 75.5V52.5C47 41.1782 56.1782 32 67.5 32ZM73.5 0C81.5081 4.5098e-07 88 6.49187 88 14.5C88 22.5081 81.5081 29 73.5 29H61.5C53.4919 29 47 22.5081 47 14.5C47 6.49187 53.4919 0 61.5 0H73.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
