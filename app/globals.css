@@ -248,6 +248,8 @@ ul {
 
   .nav--open {
     display: block;
+    max-height: calc(100dvh - 56px);
+    overflow-y: auto;
   }
 
   .nav li a {
