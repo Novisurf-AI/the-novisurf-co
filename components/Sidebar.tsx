@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 
 const LINKS = [
@@ -13,6 +13,7 @@ const LINKS = [
 export function Sidebar() {
   const [active, setActive] = useState("home");
   const [open, setOpen] = useState(false);
+  const pinned = useRef<string | null>(null);
 
   useEffect(() => {
     let frame = 0;
@@ -27,18 +28,27 @@ export function Sidebar() {
       for (const section of sections) {
         if (section.getBoundingClientRect().top <= threshold) current = section.id;
       }
-      if (atBottom && sections.length) current = sections[sections.length - 1].id;
+      if (atBottom && sections.length) current = pinned.current ?? sections[sections.length - 1].id;
       setActive(current);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    const unpin = () => {
+      pinned.current = null;
+    };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    window.addEventListener("wheel", unpin, { passive: true });
+    window.addEventListener("touchstart", unpin, { passive: true });
+    window.addEventListener("keydown", unpin);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener("wheel", unpin);
+      window.removeEventListener("touchstart", unpin);
+      window.removeEventListener("keydown", unpin);
       cancelAnimationFrame(frame);
     };
   }, []);
@@ -69,7 +79,11 @@ export function Sidebar() {
                   href={`#${id}`}
                   className={active === id ? "is-active" : undefined}
                   aria-current={active === id ? "true" : undefined}
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    pinned.current = id;
+                    setActive(id);
+                    setOpen(false);
+                  }}
                 >
                   {label}
                 </a>
